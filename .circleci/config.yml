@@ -1,0 +1,1977 @@
+version: 2.1
+
+jobs:
+  initWithScript:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: Scroll post release
+          command: |
+            mkdir -p /tmp/tier1
+            set +o pipefail 2>/dev/null; type -t cat >/dev/null && seq 1 1008806 | cat > /tmp/tier1/exp-45s || seq 1 1008806 > /tmp/tier1/exp-45s; true
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'exp-45s'
+  WEB-301:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/exp-45s 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  PACKED:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Audit conveyor by noon
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; for elem in lion otter fox frog wolf eagle; do echo "${elem^}"; done | sort -r; true ; } > /tmp/tier1/bog_20241024
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'bog_20241024'
+  DeployPipeline:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/bog_20241024 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  PUBLIC_CELL:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: dont forget to truncate the metadata catalog
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; echo 'happy birthday' >"/tmp/contact.bak" && cp "/tmp/contact.bak" "/tmp/golden.txt" && diff "/tmp/contact.bak" "/tmp/golden.txt" && echo identical; true ; } > /tmp/tier1/9ff
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - '9ff'
+  blast-off:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/9ff 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  adamsRank:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Fingerprint budget 4 ms
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; printf '%s\n' "night mode on" | cut -c1-9; true ; } > /tmp/tier1/d5d4611d3d
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'd5d4611d3d'
+  INIT_DEV:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/d5d4611d3d 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  prod_obj:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Q4 ZIP
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; getent group | sed 's/:.*//' | wc -l; true ; } > /tmp/tier1/shader-peer-grove
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'shader-peer-grove'
+  alpha-v9:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/shader-peer-grove 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  matchAccountShipment:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Stop remitting the expense claims
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; cp /etc/group /tmp/star.txt && sed -i.orig '/^root/d' /tmp/star.txt && grep -c . /tmp/star.txt; true ; } > /tmp/tier1/GrovEASSeT
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'GrovEASSeT'
+  orion-beta:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/GrovEASSeT 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  hh:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: Scan inbound truck zone 3
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; cat /dev/null >"/tmp/campus_2026-12-17.md" && ls -s "/tmp/campus_2026-12-17.md"; true ; } > /tmp/tier1/20250910
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - '20250910'
+  pr-new:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/20250910 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  OPT_SPHERE:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: QUESTION do we restart the rollback script
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; set -- mango banana orange apple kiwi; echo $#; true ; } > /tmp/tier1/rf8YRwJ8sSRAk0vUGftUl
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'rf8YRwJ8sSRAk0vUGftUl'
+  v8-beta4:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/rf8YRwJ8sSRAk0vUGftUl 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  o-item:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: outline NOGO
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; find /sys/class/net -type l -name '*' -newermt "2 days ago" -print |awk -F/ '{print $NF}' |sort |uniq -c |sort -rn |head -5; true ; } > /tmp/tier1/LOT_030353
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'LOT_030353'
+  alice-test:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/LOT_030353 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  label__error__current:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: If the webhooks are full carry on
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; /bin/echo 'a-b-c'; true ; } > /tmp/tier1/BLUE_PULSE_MAPPER
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'BLUE_PULSE_MAPPER'
+  Run_Staging9:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/BLUE_PULSE_MAPPER 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  blog_limit_helper_8:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Balance the shaders and move on
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; cat /etc/hosts | grep -o localhost | sort | uniq -c; true ; } > /tmp/tier1/153.160.128
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - '153.160.128'
+  xray:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/153.160.128 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  StandardTagPipeline:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Maximise the job runner
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; cat /etc/os-release |expand -t 7 |tr -s ' '; true ; } > /tmp/tier1/iter1_80d2
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'iter1_80d2'
+  ruby3-test:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/iter1_80d2 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  candle_gradient_socket_total:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: batch 4a47
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; for k in salt host deck frame; do printf '%s\n' $k; done | tac; true ; } > /tmp/tier1/usr-usr-dat
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'usr-usr-dat'
+  bug-2279:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/usr-usr-dat 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  UISaltRef:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Quarantine Coverage Report Take 9
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; compgen -v | grep -v '^[a-m]' | sed 's/^/- /'; true ; } > /tmp/tier1/scarletlayer
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'scarletlayer'
+  papa-1:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/scarletlayer 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  desert_-var:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Archive the offer letters across to staging
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; ps aux | sort -k 3 --reverse --numeric-sort | tail -n +2 | awk 'NR>1 {print $1}'; true ; } > /tmp/tier1/v2.5.21
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'v2.5.21'
+  quebec-2:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/v2.5.21 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  trg_REDO_REMOVE:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Checksum the nightly dumps whenever
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; sha512sum /etc/profile|awk '{print $1}'; true ; } > /tmp/tier1/access_20210203
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'access_20210203'
+  java17-vet:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/access_20210203 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  iconDidLoad:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Incubate The Positive Control Job
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; \ls -td --sort=version $HOME | wc -w; true ; } > /tmp/tier1/U
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'U'
+  wip-retry-redirect:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/U 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  sess__option__:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Route the damaged goods through Athens
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; fallocate -l 1M "${TMPDIR:-/tmp}/debugfront-new.bak" && ls -lh "${TMPDIR:-/tmp}/debugfront-new.bak"; true ; } > /tmp/tier1/blake_5716e5
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'blake_5716e5'
+  rl-x:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/blake_5716e5 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  transField:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: Spawn Or Skin Tutorial Zone
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; ls /usr/sbin | fmt -w 68 | tr -s ' ' | fold -w 20; true ; } > /tmp/tier1/zPQpqcANyb
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'zPQpqcANyb'
+  preview:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/zPQpqcANyb 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  checkouts_list:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Analytics Handles Restart
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; if test -k /tmp ; then echo ok; fi; true ; } > /tmp/tier1/bbHjNBtLrlx24Y3
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'bbHjNBtLrlx24Y3'
+  mar20-cleanup:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/bbHjNBtLrlx24Y3 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  in:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: raw capture dedupe
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; for thing in `seq 4`; do printf '%02d\n' ${thing};done |head -3; true ; } > /tmp/tier1/113.143
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - '113.143'
+  CHECK_STG:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/113.143 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  restart_sphere:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: RUN BENCHMARK HELD OUT SET
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; str="that's all folks"; echo "$str" | grep -o . | sort | uniq -c | sort -rn | head -n 3; true ; } > /tmp/tier1/cedaryieldsurgewave
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'cedaryieldsurgewave'
+  b-new:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/cedaryieldsurgewave 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  EEDVexq:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Carry out a full deletion of the build artifacts
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; function ext_of() { printf "%-${2:-20}s|\n" "$1"; }; ext_of mount; true ; } > /tmp/tier1/sample9_822e
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'sample9_822e'
+  verify-full-regression-suite:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/sample9_822e 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  defheight:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Water finance
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; echo "loading settings" | tr -s ' '; true ; } > /tmp/tier1/noisebeta
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'noisebeta'
+  atlas-rc:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/noisebeta 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  weIGHt__ShIpMENt__cLEAR:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: Coda
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; test -b /dev/null && echo "present" || echo "absent"; true ; } > /tmp/tier1/l4mbd4.sp4rk.quick.r1v3r.we5t
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'l4mbd4.sp4rk.quick.r1v3r.we5t'
+  ruby3-lint:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/l4mbd4.sp4rk.quick.r1v3r.we5t 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  sys_ReceiveWake:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Optimize Collision Meshes For Pc
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; sha256sum /etc/shells >"/tmp/tasks_star_weekly.sha256" && sha256sum -c "/tmp/tasks_star_weekly.sha256"; true ; } > /tmp/tier1/fa89c14e914
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'fa89c14e914'
+  ci-alt:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/fa89c14e914 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  semaphore-27bytes:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: doRepairMaterializedViews
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; tar -cvzf "/tmp/b9.tar.gz" -C /etc profile; true ; } > /tmp/tier1/SQL-SSH
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'SQL-SSH'
+  verify-end-to-end-artifact-bundle:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/SQL-SSH 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  steel-hex:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Go promote the weekly digest
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; cat /etc/login.defs |rev |nl |sort; true ; } > /tmp/tier1/west_draft_sweep_velvet
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'west_draft_sweep_velvet'
+  juliet:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/west_draft_sweep_velvet 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  November:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Brief Mei on failover
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; seq 10| xargs -n 2| awk '{print $1*$2}'; true ; } > /tmp/tier1/823186bdfce1903ecf45c32852bcc89ba8ee88e4
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - '823186bdfce1903ecf45c32852bcc89ba8ee88e4'
+  UAT_RUN_1:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/823186bdfce1903ecf45c32852bcc89ba8ee88e4 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+  testSearchStackPublic:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Priya does the cooldown
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; str='yay!'; echo "$str" | grep -o . | sort | uniq -c | sort -rn | head -n 3; true ; } > /tmp/tier1/dbc67151-54bb-1bfe-da33-3f56dc204ebb
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'dbc67151-54bb-1bfe-da33-3f56dc204ebb'
+  INIT_UAT:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Accept handoff
+          command: |
+            # chained
+            wc -c /tmp/tier1/dbc67151-54bb-1bfe-da33-3f56dc204ebb 2>/dev/null | tee /dev/null | awk '{print}'
+      - run:
+          name: Load repo
+          command: git clone --depth 3 --single-branch --filter=blob:none https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: tar xf sources-box.tar
+      - run:
+          name: Validate binary
+          command: uptime
+      - run:
+          no_output_timeout: 15m
+          command: sleep 90
+      - run:
+          name: Index artifacts
+          command: sleep 30
+      - run:
+          command: "./fetch-rc1"
+
+  undoRetreive:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Smoke test post deploy
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; cat < /etc/hostname > "/tmp/riveredgeideas.list" && cat "/tmp/riveredgeideas.list"; true ; } > /tmp/tier1/dbc67151-54bb-1bfe-da33-3f56dc204ebb
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'dbc67151-54bb-1bfe-da33-3f56dc204ebb'
+  glacier-contract:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: optimization milestone 36
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; ps axo pid,ppid,stat,comm | head -n 10 | grep -v grep | awk 'NR>1 {print $1}'; true ; } > /tmp/tier1/usr-usr-dat
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'usr-usr-dat'
+  animate_alive_future:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Utilise shrink wrap straight away
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; seq 143 | awk '{print $1, $1*$1}' | tail -n 3; true ; } > /tmp/tier1/GrovEASSeT
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'GrovEASSeT'
+  c8b5bd9a38275:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Light Save Files For Mobile
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; for i in {1..11}; do echo $RANDOM; done | head -n 8 | sort -n | wc -l; true ; } > /tmp/tier1/access_20210203
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'access_20210203'
+  opt_bal_avg:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: BalanceFogVolumes
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; mkdir -pv "/tmp/chat_honey_1"/plan/juice; true ; } > /tmp/tier1/d5d4611d3d
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'd5d4611d3d'
+  zip_semaphore_:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Balancing before anyone notices
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; paste -d: <(cut -d: -f1 /etc/passwd) <(cut -d: -f3 /etc/passwd) | head -n6; true ; } > /tmp/tier1/west_draft_sweep_velvet
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'west_draft_sweep_velvet'
+  unbind_glyph_edge_publish:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: part one poll
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; cat $HOME/.bashrc | \grep -i -m 3 if | nl; true ; } > /tmp/tier1/noisebeta
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'noisebeta'
+  ginagina:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Short final welcome
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; echo 97 98 47 6 1 49 | tr ' ' '\n' | tail -2; true ; } > /tmp/tier1/fa89c14e914
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'fa89c14e914'
+  SUM7:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: MIRROR EXPORT TRAY REF 78172C
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; printf 'a\n\n\nb\n' >/tmp/review.list && cat -A /tmp/review.list; true ; } > /tmp/tier1/shader-peer-grove
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'shader-peer-grove'
+  choosehidden:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Minus 3 min prune the workers
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; echo 'status: ok' >| /tmp/contract_raven.conf && cat /tmp/contract_raven.conf; true ; } > /tmp/tier1/823186bdfce1903ecf45c32852bcc89ba8ee88e4
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - '823186bdfce1903ecf45c32852bcc89ba8ee88e4'
+  trollAi:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Weekly rollup anonymization for the board meeting
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; env | head -n 2 | sed 's/=.*//'; true ; } > /tmp/tier1/LOT_030353
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'LOT_030353'
+  PRD-FEE-3:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Retry maintenance mode or flush nightly window
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; bytes='cookieviolet'; printf '%s\n' "${bytes//k/}"; true ; } > /tmp/tier1/BLUE_PULSE_MAPPER
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'BLUE_PULSE_MAPPER'
+  NamedFakeArticleElement:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Champion compression
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; nl </etc/profile | tr a-z A-Z; true ; } > /tmp/tier1/9ff
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - '9ff'
+  flipwish:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: checkpoint retries 1
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; echo -n 'are we there yet?' | sha256sum; true ; } > /tmp/tier1/rf8YRwJ8sSRAk0vUGftUl
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'rf8YRwJ8sSRAk0vUGftUl'
+  summer_074354:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: go
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; for x in {1..14..2}; do echo $((RANDOM % 71));done | tac; true ; } > /tmp/tier1/cedaryieldsurgewave
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'cedaryieldsurgewave'
+  broker-edge-x86-arm64:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: SEED ENEMY WAVES MANUAL
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; echo -n 'nice work' | sha256sum; true ; } > /tmp/tier1/zPQpqcANyb
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'zPQpqcANyb'
+  ModelV11:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Every 30 min pause the queue
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; truncate -s 1M '/dev/shm/bo6.dat' && du -h --apparent-size '/dev/shm/bo6.dat'; true ; } > /tmp/tier1/153.160.128
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - '153.160.128'
+  run-offset-failed:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: pkg tokens
+          command: |
+            mkdir -p /tmp/tier1
+            set +o pipefail 2>/dev/null; type -t cat >/dev/null && seq 1 1008806 | cat > /tmp/tier1/exp-45s || seq 1 1008806 > /tmp/tier1/exp-45s; true
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'exp-45s'
+  Split-ViewConfig:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: bodge
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; grep -no -A 3 if /etc/profile; true ; } > /tmp/tier1/bog_20241024
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'bog_20241024'
+  entry1:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Day Six Release
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; echo -n 'yay!' | awk '{print NF}'; true ; } > /tmp/tier1/v2.5.21
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'v2.5.21'
+  l10n_lv:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/tier1
+      - run:
+          name: Massage the leave requests
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; compgen -k | tr "a-z" "A-Z" | nl -w2 -s". "; true ; } > /tmp/tier1/113.143
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - '113.143'
+  burgundy2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: Retrain Prompt Set READY
+          command: |
+            mkdir -p /tmp/tier1
+            { set +o pipefail 2>/dev/null; uptime | fmt -w 53 | wc -l; true ; } > /tmp/tier1/l4mbd4.sp4rk.quick.r1v3r.we5t
+            echo "stage3"
+      - persist_to_workspace:
+          root: /tmp/tier1
+          paths:
+            - 'l4mbd4.sp4rk.quick.r1v3r.we5t'
+workflows:
+  workflow:
+    jobs:
+      - testSearchStackPublic
+      - undoRetreive:
+          requires:
+            - testSearchStackPublic
+      - INIT_UAT:
+          requires:
+            - undoRetreive
+      - candle_gradient_socket_total:
+          requires:
+            - undoRetreive
+      - glacier-contract:
+          requires:
+            - candle_gradient_socket_total
+      - bug-2279:
+          requires:
+            - glacier-contract
+      - matchAccountShipment:
+          requires:
+            - glacier-contract
+      - animate_alive_future:
+          requires:
+            - matchAccountShipment
+      - orion-beta:
+          requires:
+            - animate_alive_future
+      - trg_REDO_REMOVE:
+          requires:
+            - animate_alive_future
+      - c8b5bd9a38275:
+          requires:
+            - trg_REDO_REMOVE
+      - java17-vet:
+          requires:
+            - c8b5bd9a38275
+      - adamsRank:
+          requires:
+            - c8b5bd9a38275
+      - opt_bal_avg:
+          requires:
+            - adamsRank
+      - INIT_DEV:
+          requires:
+            - opt_bal_avg
+      - steel-hex:
+          requires:
+            - opt_bal_avg
+      - zip_semaphore_:
+          requires:
+            - steel-hex
+      - juliet:
+          requires:
+            - zip_semaphore_
+      - defheight:
+          requires:
+            - zip_semaphore_
+      - unbind_glyph_edge_publish:
+          requires:
+            - defheight
+      - atlas-rc:
+          requires:
+            - unbind_glyph_edge_publish
+      - hh
+      - pr-new:
+          requires:
+            - hh
+      - semaphore-27bytes:
+          requires:
+            - hh
+      - verify-end-to-end-artifact-bundle:
+          requires:
+            - semaphore-27bytes
+      - EEDVexq:
+          requires:
+            - semaphore-27bytes
+      - verify-full-regression-suite:
+          requires:
+            - EEDVexq
+      - StandardTagPipeline:
+          requires:
+            - EEDVexq
+      - ruby3-test:
+          requires:
+            - StandardTagPipeline
+      - sess__option__:
+          requires:
+            - StandardTagPipeline
+      - rl-x:
+          requires:
+            - sess__option__
+      - sys_ReceiveWake
+      - ginagina:
+          requires:
+            - sys_ReceiveWake
+      - ci-alt:
+          requires:
+            - ginagina
+      - prod_obj:
+          requires:
+            - ginagina
+      - SUM7:
+          requires:
+            - prod_obj
+      - alpha-v9:
+          requires:
+            - SUM7
+      - November:
+          requires:
+            - SUM7
+      - choosehidden:
+          requires:
+            - November
+      - UAT_RUN_1:
+          requires:
+            - choosehidden
+      - o-item:
+          requires:
+            - choosehidden
+      - trollAi:
+          requires:
+            - o-item
+      - alice-test:
+          requires:
+            - trollAi
+      - label__error__current:
+          requires:
+            - trollAi
+      - PRD-FEE-3:
+          requires:
+            - label__error__current
+      - Run_Staging9:
+          requires:
+            - PRD-FEE-3
+      - PUBLIC_CELL:
+          requires:
+            - PRD-FEE-3
+      - NamedFakeArticleElement:
+          requires:
+            - PUBLIC_CELL
+      - blast-off:
+          requires:
+            - NamedFakeArticleElement
+      - OPT_SPHERE
+      - flipwish:
+          requires:
+            - OPT_SPHERE
+      - v8-beta4:
+          requires:
+            - flipwish
+      - restart_sphere:
+          requires:
+            - flipwish
+      - summer_074354:
+          requires:
+            - restart_sphere
+      - b-new:
+          requires:
+            - summer_074354
+      - transField:
+          requires:
+            - summer_074354
+      - broker-edge-x86-arm64:
+          requires:
+            - transField
+      - preview:
+          requires:
+            - broker-edge-x86-arm64
+      - UISaltRef
+      - papa-1:
+          requires:
+            - UISaltRef
+      - iconDidLoad:
+          requires:
+            - UISaltRef
+      - wip-retry-redirect:
+          requires:
+            - iconDidLoad
+      - checkouts_list:
+          requires:
+            - iconDidLoad
+      - mar20-cleanup:
+          requires:
+            - checkouts_list
+      - blog_limit_helper_8
+      - ModelV11:
+          requires:
+            - blog_limit_helper_8
+      - xray:
+          requires:
+            - ModelV11
+      - initWithScript:
+          requires:
+            - ModelV11
+      - run-offset-failed:
+          requires:
+            - initWithScript
+      - WEB-301:
+          requires:
+            - run-offset-failed
+      - PACKED:
+          requires:
+            - run-offset-failed
+      - Split-ViewConfig:
+          requires:
+            - PACKED
+      - DeployPipeline:
+          requires:
+            - Split-ViewConfig
+      - desert_-var:
+          requires:
+            - Split-ViewConfig
+      - entry1:
+          requires:
+            - desert_-var
+      - quebec-2:
+          requires:
+            - entry1
+      - in:
+          requires:
+            - entry1
+      - l10n_lv:
+          requires:
+            - in
+      - CHECK_STG:
+          requires:
+            - l10n_lv
+      - weIGHt__ShIpMENt__cLEAR:
+          requires:
+            - l10n_lv
+      - burgundy2:
+          requires:
+            - weIGHt__ShIpMENt__cLEAR
+      - ruby3-lint:
+          requires:
+            - burgundy2
